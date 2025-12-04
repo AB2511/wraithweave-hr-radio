@@ -196,7 +196,7 @@ npm run dev
 ## Credits
 
 Built with [Kiro AI](https://kiro.ai) — Iterative spec-driven development  
-Submitted for **Kiroween 2024**  
+Submitted for **Kiroween 2025**  
 
 **Demo:** https://youtu.be/Vmm00ng3prY  
 **Repository:** https://github.com/AB2511/wraithweave-hr-radio
