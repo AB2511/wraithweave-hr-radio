@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Speech Recognition Test - Chrome/Edge Compatibility</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #1a1a1a;
+            color: #00ff00;
+        }
+        .test-section {
+            margin: 20px 0;
+            padding: 15px;
+            border: 1px solid #333;
+            border-radius: 5px;
+        }
+        button {
+            background: #333;
+            color: #00ff00;
+            border: 1px solid #555;
+            padding: 10px 20px;
+            margin: 5px;
+            cursor: pointer;
+            border-radius: 3px;
+        }
+        button:hover {
+            background: #444;
+        }
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        .status {
+            margin: 10px 0;
+            padding: 10px;
+            background: #222;
+            border-radius: 3px;
+        }
+        .transcript {
+            background: #111;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 3px;
+            min-height: 50px;
+        }
+        .success { color: #00ff00; }
+        .error { color: #ff0000; }
+        .warning { color: #ffaa00; }
+    </style>
+</head>
+<body>
+    <h1>🎙️ Speech Recognition Test - Chrome/Edge Compatibility</h1>
+    
+    <div class="test-section">
+        <h2>Browser Compatibility Check</h2>
+        <div id="compatibility-status" class="status">Checking...</div>
+    </div>
+
+    <div class="test-section">
+        <h2>Speech Recognition Test</h2>
+        <button id="start-btn">Start Recognition</button>
+        <button id="stop-btn" disabled>Stop Recognition</button>
+        <div id="recognition-status" class="status">Ready</div>
+        <div class="transcript">
+            <strong>Live Transcript:</strong>
+            <div id="transcript"></div>
+        </div>
+    </div>
+
+    <div class="test-section">
+        <h2>Test Instructions</h2>
+        <ol>
+            <li>Click "Start Recognition" to begin</li>
+            <li>Say: "I am worried about my job" (should trigger interrupt at score 2.75)</li>
+            <li>Say: "I am happy" (should not trigger interrupt, score 1.0)</li>
+            <li>Say: "I feel stressed and worried" (should trigger interrupt)</li>
+        </ol>
+    </div>
+
+    <script type="module">
+        // Import the speech recognition module
+        import { createRecognizer, startRecognition, hardStopRecognition, isRecognitionActive } from './src/lib/speechRecognition.js';
+        
+        // Check browser compatibility
+        function checkCompatibility() {
+            const statusEl = document.getElementById('compatibility-status');
+            
+            if (window.SpeechRecognition || window.webkitSpeechRecognition) {
+                const apiName = window.SpeechRecognition ? 'SpeechRecognition' : 'webkitSpeechRecognition';
+                statusEl.innerHTML = `<span class="success">✅ Compatible - Using ${apiName}</span>`;
+                return true;
+            } else {
+                statusEl.innerHTML = `<span class="error">❌ Not Compatible - Speech Recognition API not available</span>`;
+                return false;
+            }
+        }
+
+        // Simple emotional scoring for testing
+        function calculateEmotionalScore(text) {
+            const keywords = {
+                'worried': 1.25,
+                'job': 1.5,
+                'career': 1.5,
+                'work': 1.5,
+                'fired': 1.5,
+                'fail': 1.35,
+                'broken': 1.35,
+                'hopeless': 1.35,
+                'alone': 1.35,
+                'lonely': 1.35,
+                'stressed': 1.25,
+                'panic': 1.25,
+                'anxiety': 1.25
+            };
+
+            let score = 1.0;
+            const words = text.toLowerCase().split(/\s+/);
+            
+            words.forEach(word => {
+                if (keywords[word]) {
+                    score += keywords[word] - 1.0;
+                }
+            });
+
+            return score;
+        }
+
+        // UI elements
+        const startBtn = document.getElementById('start-btn');
+        const stopBtn = document.getElementById('stop-btn');
+        const statusEl = document.getElementById('recognition-status');
+        const transcriptEl = document.getElementById('transcript');
+
+        let currentTranscript = '';
+
+        // Check compatibility on load
+        const isCompatible = checkCompatibility();
+        if (!isCompatible) {
+            startBtn.disabled = true;
+            statusEl.innerHTML = '<span class="error">Speech Recognition not available in this browser</span>';
+        }
+
+        // Handle speech results
+        function handleSpeechResult(event) {
+            let interimTranscript = '';
+            let finalText = '';
+            
+            for (let i = 0; i < event.results.length; i++) {
+                const transcript = event.results[i][0].transcript;
+                if (event.results[i].isFinal) {
+                    finalText += transcript;
+                } else {
+                    interimTranscript += transcript;
+                }
+            }
+            
+            currentTranscript += finalText;
+            const liveTranscript = currentTranscript + interimTranscript;
+            
+            // Update display
+            transcriptEl.innerHTML = liveTranscript || '<em>Listening...</em>';
+            
+            // Check emotional score
+            const score = calculateEmotionalScore(liveTranscript);
+            const threshold = 1.6;
+            
+            if (score >= threshold) {
+                statusEl.innerHTML = `<span class="error">🚨 INTERRUPT TRIGGERED! Score: ${score.toFixed(2)} (≥ ${threshold})</span>`;
+                stopRecognition();
+            } else {
+                statusEl.innerHTML = `<span class="success">Listening... Score: ${score.toFixed(2)}</span>`;
+            }
+        }
+
+        // Handle speech errors
+        function handleSpeechError(event) {
+            statusEl.innerHTML = `<span class="error">Error: ${event.error}</span>`;
+            console.error('Speech recognition error:', event.error);
+        }
+
+        // Start recognition
+        function startRecognition() {
+            if (!isCompatible) return;
+            
+            currentTranscript = '';
+            transcriptEl.innerHTML = '<em>Starting...</em>';
+            statusEl.innerHTML = '<span class="warning">Starting recognition...</span>';
+            
+            const success = startRecognition(handleSpeechResult, handleSpeechError);
+            
+            if (success) {
+                startBtn.disabled = true;
+                stopBtn.disabled = false;
+                statusEl.innerHTML = '<span class="success">Listening...</span>';
+            } else {
+                statusEl.innerHTML = '<span class="error">Failed to start recognition</span>';
+            }
+        }
+
+        // Stop recognition
+        function stopRecognition() {
+            hardStopRecognition();
+            startBtn.disabled = false;
+            stopBtn.disabled = true;
+            statusEl.innerHTML = '<span class="warning">Stopped</span>';
+            
+            if (currentTranscript) {
+                transcriptEl.innerHTML = `Final: ${currentTranscript}`;
+            } else {
+                transcriptEl.innerHTML = '<em>No speech detected</em>';
+            }
+        }
+
+        // Event listeners
+        startBtn.addEventListener('click', startRecognition);
+        stopBtn.addEventListener('click', stopRecognition);
+
+        // Show ready status
+        if (isCompatible) {
+            statusEl.innerHTML = '<span class="success">Ready - Click Start Recognition to begin</span>';
+        }
+    </script>
+</body>
+</html>

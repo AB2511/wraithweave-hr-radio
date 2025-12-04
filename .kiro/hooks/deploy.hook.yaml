@@ -1,0 +1,36 @@
+name: "Auto Deploy WraithWeave"
+description: "Automatically deploy to Vercel when code is pushed to main branch"
+
+triggers:
+  - event: "git_push"
+    branch: "main"
+    paths: ["src/**", "public/**", "package.json"]
+
+actions:
+  - type: "shell_command"
+    command: "npm run build"
+    working_directory: "wraithweave-core"
+    
+  - type: "shell_command" 
+    command: "vercel --prod --yes"
+    working_directory: "wraithweave-core"
+    env:
+      VERCEL_TOKEN: "${VERCEL_TOKEN}"
+      
+  - type: "message"
+    content: "WraithWeave deployed successfully. Testing horror experience..."
+    
+  - type: "shell_command"
+    command: "curl -f ${VERCEL_URL} && echo 'Deployment verified'"
+    
+notifications:
+  - type: "console"
+    message: "WraithWeave deployment complete: ${VERCEL_URL}"
+    
+artifacts:
+  - path: ".kiro/last_deploy.log"
+    content: |
+      Deployment completed at: $(date)
+      URL: ${VERCEL_URL}
+      Build status: Success
+      Horror systems: Operational

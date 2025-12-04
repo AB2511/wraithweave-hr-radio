@@ -1,0 +1,748 @@
+/* Base App Styles */
+.app {
+  font-family: "Courier New", monospace;
+  text-align: center;
+  padding: 2rem;
+  background: #000;
+  color: #00ff88;
+  min-height: 100vh;
+  position: relative;
+  overflow-x: hidden;
+}
+
+.app-header {
+  margin-bottom: 2rem;
+}
+
+.app-title {
+  font-size: 2.5rem;
+  margin: 0;
+  text-shadow: 0 0 10px #00ff88;
+  animation: titleGlow 3s ease-in-out infinite alternate;
+}
+
+.app-subtitle {
+  font-size: 0.9rem;
+  color: #666;
+  margin-top: 0.5rem;
+}
+
+@keyframes titleGlow {
+  0% { text-shadow: 0 0 10px #00ff88; }
+  100% { text-shadow: 0 0 20px #00ff88, 0 0 30px #00ff88; }
+}
+
+/* Button Styles */
+.btn, .btn-stop {
+  font-size: 1.1rem;
+  padding: 0.7rem 1rem;
+  background: #111;
+  color: #00ff88;
+  border: 2px solid #00ff88;
+  cursor: pointer;
+  margin: 0.5rem;
+  transition: all 0.3s ease;
+}
+
+.btn:hover {
+  background: #00ff88;
+  color: #000;
+  box-shadow: 0 0 15px #00ff88;
+}
+
+.btn-stop {
+  color: #ff4444;
+  border-color: #ff4444;
+  animation: pulse 1s infinite;
+}
+
+/* Utility Classes */
+.flex { display: flex; }
+.flex-col { flex-direction: column; }
+.gap-4 { gap: 1rem; }
+.text-green-400 { color: #4ade80; }
+.text-sm { font-size: 0.875rem; }
+.opacity-70 { opacity: 0.7; }
+
+.animate-pulse {
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+/* Panic Meter Styles */
+.panic-meter {
+  margin: 2rem auto;
+  max-width: 400px;
+  padding: 1rem;
+  border: 2px solid #333;
+  background: #111;
+  transition: all 0.3s ease;
+}
+
+.panic-meter.shake {
+  animation: shake 0.5s ease-in-out infinite;
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-5px); }
+  75% { transform: translateX(5px); }
+}
+
+/* Enhanced panic meter animations */
+.panic-bar {
+  height: 100%;
+  transition: width 0.5s ease, background-color 0.3s ease;
+  position: relative;
+  z-index: 2;
+}
+
+/* Performance Watch - Yellow creeping pulse */
+.panic-bar[style*="#ffaa00"] {
+  animation: yellowPulse 2s ease-in-out infinite;
+}
+
+@keyframes yellowPulse {
+  0%, 100% { filter: brightness(1); }
+  50% { filter: brightness(1.3); }
+}
+
+/* Psychological Red Flag - Deep orange shake */
+.panic-bar[style*="#ff4444"] {
+  animation: redShake 1s ease-in-out infinite;
+}
+
+@keyframes redShake {
+  0%, 100% { filter: brightness(1) hue-rotate(0deg); }
+  50% { filter: brightness(1.2) hue-rotate(-10deg); }
+}
+
+/* Termination Risk - Slow red siren pulse */
+.panic-bar[style*="#ff0000"] {
+  animation: sirenPulse 3s ease-in-out infinite;
+}
+
+@keyframes sirenPulse {
+  0%, 100% { 
+    filter: brightness(1);
+    box-shadow: 0 0 10px #ff0000;
+  }
+  50% { 
+    filter: brightness(1.5);
+    box-shadow: 0 0 20px #ff0000, 0 0 30px #ff0000;
+  }
+}
+
+.panic-header {
+  font-size: 0.9rem;
+  margin-bottom: 0.8rem;
+  color: #00ff88;
+  font-weight: normal;
+}
+
+.panic-bar-container {
+  position: relative;
+  height: 20px;
+  background: #222;
+  border: 1px solid #444;
+  overflow: hidden;
+}
+
+.panic-bar {
+  height: 100%;
+  transition: width 0.5s ease, background-color 0.3s ease;
+  position: relative;
+  z-index: 2;
+}
+
+.panic-bar-bg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1;
+}
+
+.panic-status {
+  font-size: 0.8rem;
+  margin-top: 0.8rem;
+  color: #888;
+}
+
+/* CRT Terminal Styles */
+.crt-terminal {
+  position: relative;
+  background: #000;
+  border: 2px solid #00ff88;
+  margin: 2rem auto;
+  max-width: 600px;
+  padding: 1rem;
+  font-family: "Courier New", monospace;
+  overflow: hidden;
+}
+
+.crt-terminal.crt-active {
+  animation: crtFlicker 0.1s ease-in-out infinite alternate;
+}
+
+@keyframes crtFlicker {
+  0% { 
+    filter: brightness(1) contrast(1);
+    text-shadow: 0 0 5px #00ff88;
+  }
+  100% { 
+    filter: brightness(1.1) contrast(1.1);
+    text-shadow: 0 0 8px #00ff88;
+  }
+}
+
+.crt-scanlines {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(0, 255, 136, 0.03) 2px,
+    rgba(0, 255, 136, 0.03) 4px
+  );
+  pointer-events: none;
+  z-index: 2;
+}
+
+.crt-content {
+  position: relative;
+  z-index: 1;
+}
+
+.crt-header {
+  color: #00ff88;
+  font-size: 0.8rem;
+  margin-bottom: 1rem;
+  border-bottom: 1px solid #333;
+  padding-bottom: 0.5rem;
+}
+
+.crt-text {
+  color: #00ff88;
+  font-size: 1.1rem;
+  line-height: 1.4;
+  min-height: 2rem;
+  text-align: left;
+}
+
+.crt-cursor {
+  animation: cursorBlink 1s infinite;
+}
+
+@keyframes cursorBlink {
+  0%, 50% { opacity: 1; }
+  51%, 100% { opacity: 0; }
+}
+
+.crt-flicker {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 255, 136, 0.02);
+  animation: screenFlicker 0.15s ease-in-out infinite alternate;
+  pointer-events: none;
+  z-index: 3;
+}
+
+@keyframes screenFlicker {
+  0% { opacity: 0.98; }
+  100% { opacity: 1; }
+}
+
+/* Results Section */
+.recorder-section {
+  margin: 2rem 0;
+}
+
+.reset-btn {
+  font-size: 0.8rem;
+  padding: 0.4rem 0.8rem;
+  margin-top: 1rem;
+  background: #333;
+  color: #666;
+  border: 1px solid #555;
+}
+
+.reset-btn:hover {
+  background: #444;
+  color: #888;
+}
+
+.results {
+  margin-top: 2rem;
+}
+
+.transcript-section {
+  margin-bottom: 2rem;
+  text-align: left;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.transcript-label {
+  color: #00ff88;
+  font-size: 0.9rem;
+  margin-bottom: 0.5rem;
+}
+
+.transcript-text {
+  color: #ccc;
+  font-size: 1rem;
+  padding: 0.8rem;
+  background: #111;
+  border: 1px solid #333;
+}
+
+.audio-section {
+  margin-top: 2rem;
+}
+
+.audio-label {
+  color: #00ff88;
+  font-size: 0.9rem;
+  margin-bottom: 0.8rem;
+}
+
+.audio-player {
+  margin-top: 1rem;
+  filter: invert(1) hue-rotate(180deg);
+  width: 100%;
+  max-width: 400px;
+}/* Fr
+eeze Effect */
+.freeze {
+  pointer-events: none;
+  filter: blur(1px) brightness(0.6);
+  transition: filter 0.2s;
+}
+
+.freeze::after {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: repeating-linear-gradient(
+    transparent 0px,
+    transparent 2px,
+    rgba(255, 0, 0, 0.03) 3px
+  );
+  animation: flicker 80ms infinite;
+  z-index: 9999;
+  pointer-events: none;
+}
+
+@keyframes flicker {
+  0% { opacity: 0.1; transform: translateY(0); }
+  50% { opacity: 0.25; transform: translateY(-1px); }
+  100% { opacity: 0.1; transform: translateY(1px); }
+}
+
+/* Processing Button */
+.btn-processing {
+  font-size: 1.1rem;
+  padding: 0.7rem 1rem;
+  background: #333;
+  color: #ffaa00;
+  border: 2px solid #ffaa00;
+  cursor: not-allowed;
+  margin: 0.5rem;
+  animation: processingPulse 1.5s ease-in-out infinite;
+}
+
+@keyframes processingPulse {
+  0%, 100% { 
+    opacity: 0.7;
+    box-shadow: 0 0 5px #ffaa00;
+  }
+  50% { 
+    opacity: 1;
+    box-shadow: 0 0 15px #ffaa00, 0 0 25px #ffaa00;
+  }
+}/*
+ Glitch Peak Effect */
+.glitch-peak {
+  filter: blur(2px) brightness(0.3) contrast(1.5) !important;
+}
+
+.glitch-peak::after {
+  background: repeating-linear-gradient(
+    transparent 0px,
+    transparent 1px,
+    rgba(255, 0, 0, 0.08) 2px
+  ) !important;
+  animation: hardFlicker 40ms infinite !important;
+}
+
+@keyframes hardFlicker {
+  0% { opacity: 0.3; transform: translateY(-2px) translateX(1px); }
+  50% { opacity: 0.6; transform: translateY(1px) translateX(-1px); }
+  100% { opacity: 0.3; transform: translateY(0px) translateX(0px); }
+}/* HOR
+ROR SYSTEM - PRECISE TIMING EFFECTS */
+
+/* Stage 1: UI Freeze (0ms) */
+.horror-freeze {
+  pointer-events: none;
+  cursor: none;
+  transition: none !important;
+}
+
+/* Stage 2: Micro-glitch burst (40ms) */
+.horror-micro-glitch {
+  animation: microGlitch 120ms ease-out;
+}
+
+@keyframes microGlitch {
+  0% { transform: translateX(0); }
+  20% { transform: translateX(-2px) scaleX(1.01); }
+  40% { transform: translateX(1px) scaleX(0.99); }
+  60% { transform: translateX(-1px) scaleX(1.005); }
+  100% { transform: translateX(0) scaleX(1); }
+}
+
+/* Stage 3: CRT Distortion Wave (180ms) */
+.horror-crt-wave {
+  position: relative;
+  overflow: hidden;
+}
+
+.horror-crt-wave::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(0, 255, 136, 0.1) 30%,
+    rgba(0, 255, 136, 0.2) 50%,
+    rgba(0, 255, 136, 0.1) 70%,
+    transparent 100%
+  );
+  animation: crtWave 400ms ease-out;
+  z-index: 1000;
+  pointer-events: none;
+}
+
+@keyframes crtWave {
+  0% { left: -100%; }
+  100% { left: 100%; }
+}
+
+/* Stage 4: UI Tint Shift (260ms) */
+.horror-red-tint {
+  filter: hue-rotate(-15deg) brightness(1.06) contrast(1.1);
+  transition: filter 140ms ease-out;
+}
+
+/* Stage 5: Text Smear + Chromatic Aberration (400ms) */
+.horror-text-smear {
+  text-shadow: 
+    -1px 0 #ff0000,
+    1px 0 #00ffff,
+    0 0 5px rgba(0, 255, 136, 0.5);
+  animation: textSmear 220ms ease-out;
+}
+
+@keyframes textSmear {
+  0% { 
+    text-shadow: 
+      -1px 0 #ff0000,
+      1px 0 #00ffff,
+      0 0 5px rgba(0, 255, 136, 0.5);
+  }
+  50% { 
+    text-shadow: 
+      -3px 0 #ff0000,
+      3px 0 #00ffff,
+      0 0 10px rgba(0, 255, 136, 0.8);
+  }
+  100% { 
+    text-shadow: 
+      -1px 0 #ff0000,
+      1px 0 #00ffff,
+      0 0 5px rgba(0, 255, 136, 0.5);
+  }
+}
+
+/* Stage 6: Full-screen Glitch Overlay (620ms) */
+.horror-glitch-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: 
+    repeating-linear-gradient(
+      0deg,
+      transparent 0px,
+      transparent 2px,
+      rgba(255, 0, 0, 0.03) 2px,
+      rgba(255, 0, 0, 0.03) 4px
+    ),
+    repeating-linear-gradient(
+      90deg,
+      transparent 0px,
+      transparent 1px,
+      rgba(0, 255, 255, 0.02) 1px,
+      rgba(0, 255, 255, 0.02) 2px
+    );
+  opacity: 0.15;
+  animation: glitchOverlay 280ms ease-out;
+  z-index: 9999;
+  pointer-events: none;
+  mix-blend-mode: screen;
+}
+
+@keyframes glitchOverlay {
+  0% { 
+    opacity: 0;
+    transform: translateX(0);
+  }
+  20% { 
+    opacity: 0.25;
+    transform: translateX(-2px);
+  }
+  40% { 
+    opacity: 0.15;
+    transform: translateX(1px);
+  }
+  60% { 
+    opacity: 0.3;
+    transform: translateX(-1px);
+  }
+  100% { 
+    opacity: 0.15;
+    transform: translateX(0);
+  }
+}
+
+/* Stage 7: Message Render with Jitter (900ms) */
+.horror-message-jitter {
+  animation: messageJitter 300ms ease-out;
+}
+
+@keyframes messageJitter {
+  0% { 
+    opacity: 0;
+    transform: translateY(10px) scale(0.98);
+  }
+  20% { 
+    opacity: 0.7;
+    transform: translateY(-2px) scale(1.02);
+  }
+  40% { 
+    opacity: 1;
+    transform: translateY(1px) scale(0.99);
+  }
+  60% { 
+    opacity: 1;
+    transform: translateY(-1px) scale(1.01);
+  }
+  100% { 
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* Stage 8: Freeze Release (1200ms) */
+.horror-frame-skip {
+  animation: frameSkip 50ms linear;
+}
+
+@keyframes frameSkip {
+  0% { transform: translateX(0); }
+  50% { transform: translateX(-1px) scale(1.001); }
+  100% { transform: translateX(0) scale(1); }
+}
+
+/* Enhanced CRT Effects */
+.horror-crt-enhanced {
+  position: relative;
+}
+
+.horror-crt-enhanced::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: 
+    repeating-linear-gradient(
+      0deg,
+      transparent 0px,
+      transparent 2px,
+      rgba(0, 255, 136, 0.02) 2px,
+      rgba(0, 255, 136, 0.02) 4px
+    );
+  pointer-events: none;
+  z-index: 1;
+  animation: crtFlicker 0.1s infinite alternate;
+}
+
+@keyframes crtFlicker {
+  0% { opacity: 0.98; }
+  100% { opacity: 1; }
+}
+
+/* Audio Crackle Visual Indicator */
+.horror-audio-crackle {
+  position: relative;
+}
+
+.horror-audio-crackle::before {
+  content: "📻";
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  font-size: 12px;
+  opacity: 0.7;
+  animation: audioIndicator 200ms ease-out;
+  z-index: 100;
+}
+
+@keyframes audioIndicator {
+  0% { 
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  50% { 
+    opacity: 1;
+    transform: scale(1.2);
+  }
+  100% { 
+    opacity: 0.7;
+    transform: scale(1);
+  }
+}
+
+/* Demo Mode Toggle */
+.demo-mode-toggle {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background: rgba(0, 0, 0, 0.8);
+  color: #00ff88;
+  border: 1px solid #00ff88;
+  padding: 8px 12px;
+  font-size: 12px;
+  font-family: monospace;
+  cursor: pointer;
+  z-index: 10000;
+  transition: all 0.2s ease;
+}
+
+.demo-mode-toggle:hover {
+  background: rgba(0, 255, 136, 0.1);
+  box-shadow: 0 0 10px rgba(0, 255, 136, 0.3);
+}
+
+.demo-mode-active {
+  background: rgba(255, 165, 0, 0.2);
+  border-color: #ffa500;
+  color: #ffa500;
+}
+
+/* Accessibility Warning */
+.horror-warning {
+  position: fixed;
+  bottom: 20px;
+  left: 20px;
+  background: rgba(255, 0, 0, 0.1);
+  border: 1px solid #ff4444;
+  color: #ff4444;
+  padding: 8px 12px;
+  font-size: 11px;
+  font-family: monospace;
+  max-width: 300px;
+  z-index: 10000;
+  opacity: 0.7;
+}
+
+/* Enhanced Panic Meter Horror States */
+.panic-meter.horror-active {
+  animation: panicPulse 2s ease-in-out infinite;
+  box-shadow: 0 0 20px rgba(255, 0, 0, 0.5);
+}
+
+@keyframes panicPulse {
+  0%, 100% { 
+    transform: scale(1);
+    filter: brightness(1);
+  }
+  50% { 
+    transform: scale(1.02);
+    filter: brightness(1.1) hue-rotate(-10deg);
+  }
+}/* Demo
+ Mode Toggle */
+.demo-mode-toggle {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background: rgba(0, 0, 0, 0.8);
+  color: #00ff88;
+  border: 1px solid #00ff88;
+  padding: 8px 12px;
+  font-size: 12px;
+  font-family: monospace;
+  cursor: pointer;
+  z-index: 10000;
+  transition: all 0.2s ease;
+  border-radius: 4px;
+}
+
+.demo-mode-active {
+  background: rgba(255, 165, 0, 0.2) !important;
+  border-color: #ffa500 !important;
+  color: #ffa500 !important;
+}
+
+.demo-mode-toggle:hover:not(.demo-mode-active) {
+  background: rgba(0, 255, 136, 0.1);
+  box-shadow: 0 0 10px rgba(0, 255, 136, 0.3);
+}
+
+.demo-mode-toggle.demo-mode-active:hover {
+  background: rgba(255, 165, 0, 0.3) !important;
+  box-shadow: 0 0 10px rgba(255, 165, 0, 0.5);
+}
+
+/* Horror Warning */
+.horror-warning {
+  position: fixed;
+  bottom: 20px;
+  left: 20px;
+  background: rgba(255, 0, 0, 0.1);
+  border: 1px solid #ff4444;
+  color: #ff4444;
+  padding: 8px 12px;
+  font-size: 11px;
+  font-family: monospace;
+  max-width: 300px;
+  z-index: 10000;
+  opacity: 0.7;
+  border-radius: 4px;
+}
